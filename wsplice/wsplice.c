@@ -539,6 +539,7 @@ local void OutputString( char *p, char *record )
                 PutNL();
                 break;
             case '#':
+            case 'v':
                 sprintf( numstr, "%u", OutNum );
                 for( col = 0; col < strlen( numstr ); ++col ) {
                     OutputChar( numstr[col] );

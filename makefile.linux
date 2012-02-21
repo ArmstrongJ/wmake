@@ -1,0 +1,61 @@
+CC = wcc386
+LINK = wlink
+
+CPPFLAGS = -I$(OBJDIR) -Ih -Iwatcom/h -Iwatcom/h/orl $(DEFS)
+CFLAGS = -w4 -e25 -5s -bt=linux -mf -q
+
+WLFLAGS = sys linux option map 
+
+DEFS = -D__LINUX__ -DUNIX -DWMAKE -D__UNIX__ -Uunix -DBOOTSTRAP
+# DUNIX -Uunix -DBOOTSTRAP -DWMAKE
+
+OWBINDIR = linux386
+
+HOSTDIR = host
+OBJDIR = $(OWBINDIR)/obj
+
+.c: c
+.c: watcom/c
+.obj: $(OBJDIR)
+.c.obj : 
+	$(CC) $(CFLAGS) $(CPPFLAGS) -I$(OBJDIR) -fo=$(OBJDIR)/$@ $<
+
+all: $(OBJDIR) $(OWBINDIR)/wmake
+
+CFILES= macros.c main.c massert.c mautodep.c mautoomf.c mautoorl.c mautores.c mcache.c 
+CFILES+= memory.c mexec.c mglob.c mhash.c misc.c mlex.c mlexmac.c mlexprs.c mparse.c 
+CFILES+= mpreproc.c mrcmsg.c msg.c mstream.c msuffix.c msysdep.c  mtarget.c mupdate.c 
+CFILES+= mvecstr.c autodept.c 
+
+OBJS=$(CFILES:.c=.obj)
+
+$(HOSTDIR)/wsplice: 
+    owcc $(CPPFLAGS) -o $(HOSTDIR)/wsplice wsplice/wsplice.c
+
+$(OBJDIR)/usage.gh : h/usage.sp $(HOSTDIR)/wsplice
+	$(HOSTDIR)/wsplice -kIS_RC -kENGLISH -f '{%+(MSG_USE_E_BASE+%v-1), "%s"},' h/usage.sp $(OBJDIR)/usage.gh
+
+$(OBJDIR)/usageend.gh: $(OBJDIR)/usage.gh $(HOSTDIR)/wsplice
+	$(HOSTDIR)/wsplice $(OBJDIR)/usage.gh -o "%n%n%n%n" $(OBJDIR)/usage.rcp
+	$(HOSTDIR)/wsplice -f "%+" $(OBJDIR)/usage.rcp -o "$#define USAGE_LAST (USAGE_BASE+%v)%n" $@
+	rm -f $(OBJDIR)/usage.rcp
+
+$(OBJDIR)/cretype : cretype.c
+	$(CC) -o $@ $<
+
+$(OBJDIR)/isarray.gh : $(OBJDIR)/cretype
+	$< > $@
+
+$(OWBINDIR)/wmake: $(OBJDIR)/wmake
+	cp $< $@
+
+$(OBJDIR)/wmake: $(OBJDIR)/usageend.gh $(OBJDIR)/isarray.gh $(OBJS)
+	cd $(OBJDIR) && $(LINK) name $^. file { $(OBJS) }
+
+#$(OBJDIR):
+#	mkdir $(OBJDIR)
+
+clean: .SYMBOLIC
+	rm -f $(OBJDIR)/*.obj $(OBJDIR)/*.gh $(OBJDIR)/wmake
+	rm -f $(HOSTDIR)/*.obj $(HOSTDIR)/wsplice 
+

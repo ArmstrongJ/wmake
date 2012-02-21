@@ -8,20 +8,25 @@ Requirements
 ============
 To build this project, the following are necessary:
 
-    * GNU make (irony...)
+    * GNU make
     * GCC
     
-Future versions will require a working Open Watcom installation and should be compatible with wmake itself.
+or, alternatively,
 
+    * Open Watcom
+    
 Quick Start
 ===========
 From the top-level directory, execute:
     
-    make
+    make -f gnumake
+    
+to build with GNU tools.  To build with the Open Watcom package on GNU/Linux, execute:
+
+    wmake -f makefile.linux
     
 The final product, the wmake executable, should reside in the linux386 directory.
 
 Licensing
 =========
 The source code is licensed under the Sybase Open Watcom Public License version 1.0.  The full text of said license can be found in license.txt.
-
