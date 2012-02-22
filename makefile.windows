@@ -1,14 +1,14 @@
 CC = wcc386
 LINK = wlink
 
-CPPFLAGS = -I$(%WATCOM)/lh -I$(OBJDIR) -Ih -Iwatcom/h -Iwatcom/h/orl $(DEFS)
-CFLAGS = -w4 -e25 -5s -bt=linux -mf -q
+CPPFLAGS = -I$(%WATCOM)/h -I$(OBJDIR) -Ih -Iwatcom/h -Iwatcom/h/nt -Iwatcom/h/orl $(DEFS)
+CFLAGS = -w4 -e25 -5s -bt=nt -mf -q
 
 HOSTCPPFLAGS = -Iwatcom/h
 
-DEFS = -D__LINUX__ -DUNIX -DWMAKE -D__UNIX__ -Uunix -DBOOTSTRAP
+DEFS = -D__NT__ -DWMAKE -DBOOTSTRAP
 
-OWBINDIR = linux386
+OWBINDIR = nt386
 
 HOSTDIR = host
 OBJDIR = $(OWBINDIR)/obj
@@ -19,7 +19,7 @@ OBJDIR = $(OWBINDIR)/obj
 .c.obj : 
 	$(CC) $(CFLAGS) $(CPPFLAGS) -I$(OBJDIR) -fo=$(OBJDIR)/$@ $<
 
-all: $(OBJDIR) $(OWBINDIR)/wmake
+all: $(OBJDIR) $(OWBINDIR)/wmake.exe
 
 CFILES= macros.c main.c massert.c mautodep.c mautoomf.c mautoorl.c mautores.c mcache.c 
 CFILES+= memory.c mexec.c mglob.c mhash.c misc.c mlex.c mlexmac.c mlexprs.c mparse.c 
@@ -45,11 +45,11 @@ $(HOSTDIR)/cretype : cretype.c
 $(OBJDIR)/isarray.gh : $(HOSTDIR)/cretype
 	$< > $@
 
-$(OWBINDIR)/wmake: $(OBJDIR)/wmake
+$(OWBINDIR)/wmake.exe: $(OBJDIR)/wmake.exe
 	cp $< $@
 
-$(OBJDIR)/wmake: $(OBJDIR)/usageend.gh $(OBJDIR)/isarray.gh $(OBJS)
-	cd $(OBJDIR) && $(LINK) name $^. file { $(OBJS) }
+$(OBJDIR)/wmake.exe: $(OBJDIR)/usageend.gh $(OBJDIR)/isarray.gh $(OBJS)
+	cd $(OBJDIR) && $(LINK) name $^. sys nt file { $(OBJS) }
 
 clean: .SYMBOLIC
 	rm -f $(OBJDIR)/*.obj $(OBJDIR)/*.gh $(OBJDIR)/wmake
