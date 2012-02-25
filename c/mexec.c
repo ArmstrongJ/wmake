@@ -52,6 +52,11 @@
     #include <idedrv.h>
 #endif
 
+#ifdef __WIN32__
+    #include <windows.h>
+    #define _WINDOWS_H
+#endif
+
 #include "massert.h"
 #include "mtypes.h"
 #include "mtarget.h"
@@ -988,11 +993,77 @@ STATIC int intSystem( const char *cmd )
                 PrtMsg( INF | SIG_ERR_0, WTERMSIG( status ) );
             }
         }
+        
         CheckForBreak();
         return( status );
     }
 }
 #endif
+
+/* For win32, we can and should use CreateProcess() to extend the command
+ * line limit
+ */
+#ifdef __WIN32__
+
+STATIC RET_T winSystem( const char *cmd )
+{
+    STARTUPINFO si;
+    PROCESS_INFORMATION pi;
+    SECURITY_ATTRIBUTES saAttr;
+    DWORD exitCode;
+    
+    char *writeable_cmd;
+
+    if(cmd == NULL)
+        return( RET_ERROR );
+    
+    /* Create a writeable copy in case we're in unicode land */
+    writeable_cmd = (char *)malloc((strlen(cmd)+1)*sizeof(char));
+    if(writeable_cmd == NULL)
+        return( RET_ERROR );
+    strcpy(writeable_cmd, cmd);
+
+    /* Initialize necessary structures */
+    ZeroMemory(&si,sizeof(STARTUPINFO));
+    si.cb = sizeof(STARTUPINFO);
+    
+    ZeroMemory(&saAttr,sizeof(SECURITY_ATTRIBUTES));
+    saAttr.nLength = sizeof(SECURITY_ATTRIBUTES);
+    saAttr.bInheritHandle = FALSE; 
+    saAttr.lpSecurityDescriptor = NULL;
+
+    /* Execute Make */
+    if(!CreateProcess(NULL,
+                      writeable_cmd,
+                      &saAttr,               /* Security Attribs */
+                      &saAttr,               /* Thread Attribs */
+                      FALSE,                 /* For now, no handles are inherited */
+                      NORMAL_PRIORITY_CLASS, 
+                      NULL,                  /* Environment variables */
+                      NULL,                  /* Working dir - should be fine */
+                      &si,                   /* Startup info (in) */
+                      &pi))                  /* Process info (out) */
+    {
+        free(writeable_cmd);
+        return( RET_ERROR );
+    } 
+    else 
+    {
+        WaitForSingleObject(pi.hProcess, INFINITE);   
+    }
+
+    free(writeable_cmd);
+
+    /* Check the process return code */
+    if(GetExitCodeProcess(pi.hProcess, &exitCode)) {
+        if(exitCode == (DWORD)0 )
+            return( RET_SUCCESS );
+    } 
+    
+    return( RET_ERROR );
+}
+
+#endif /*__WIN32__*/
 
 STATIC RET_T mySystem( const char *cmdname, const char *cmd )
 /************************************************************
@@ -1000,7 +1071,7 @@ STATIC RET_T mySystem( const char *cmdname, const char *cmd )
  */
 {
     int retcode;
-
+    
     assert( cmd != NULL );
 
     if( Glob.noexec ) {
@@ -1008,10 +1079,26 @@ STATIC RET_T mySystem( const char *cmdname, const char *cmd )
     }
 
     closeCurrentFile();
+    
 #ifdef __UNIX__
     retcode = intSystem( cmd );
 #else
+
+#ifdef __WIN32__
+    /* Check if we need the command shell in windows */
+    if(findInternal(cmdname) >= 0)
+        retcode = system( cmd );
+        
+    /* If we don't "need" the command shell, avoid it
+     * and its shortcomings
+     */
+    else
+        retcode = winSystem( cmd );
+    
+#else
     retcode = system( cmd );
+#endif
+
 #endif
     lastErrorLevel = (UINT8)retcode;
 #ifdef __UNIX__
@@ -1838,10 +1925,15 @@ STATIC RET_T shellSpawn( char *cmd, int flags )
         }
         ++arg;
     }
+    
+    /* Windows calls handle this internally */
+#ifndef __WIN32__
     if( arg - cmd >= _MAX_PATH ) {
         PrtMsg( ERR | COMMAND_TOO_LONG );
         return( RET_ERROR );
     }
+#endif
+
     if( quote ) {
         /* closing quote is missing */
         PrtMsg( ERR | SYNTAX_ERROR_IN, cmd );
@@ -1933,8 +2025,18 @@ STATIC RET_T shellSpawn( char *cmd, int flags )
                     does not always work */
             retcode = mySystem( cmdname, cmd );
 #else
+            
+#ifdef __WIN32__ /* spawnvp on NT relies on cmd.exe or whatever
+                  * the default command prompt is, so let's be 
+                  * more controlling and use mySystem instead 
+                  */
+            retcode = mySystem( cmdname, cmd );
+#else
             retcode = spawnvp( P_WAIT, cmdname, argv );
-#endif
+#endif /* __WIN32__ */
+            
+#endif /* __UNIX__ */
+            
             if( retcode < 0 ) {
                 PrtMsg( ERR | UNABLE_TO_EXEC, cmdname );
             }

@@ -17,7 +17,7 @@ OBJDIR = $(OWBINDIR)/obj
 .c: watcom/c
 .obj: $(OBJDIR)
 .c.obj : 
-	$(CC) $(CFLAGS) $(CPPFLAGS) -I$(OBJDIR) -fo=$(OBJDIR)/$@ $<
+	$(CC) $(CFLAGS) $(CPPFLAGS) -I$(OBJDIR) -fo=$(OBJDIR)/$^. $<
 
 all: $(OBJDIR) $(OWBINDIR)/wmake
 

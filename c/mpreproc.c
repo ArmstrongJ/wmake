@@ -127,8 +127,8 @@ STATIC void addExpr   ( DATAVALUE *leftVal );
 STATIC void multExpr  ( DATAVALUE *leftVal );
 STATIC void unaryExpr ( DATAVALUE *leftVal );
 
-STATIC char         *currentPtr;    // Pointer to current start in string
-STATIC TOKEN_TYPE   currentToken;   // Contains information for current token
+STATIC char              *currentPtr;    // Pointer to current start in string
+STATIC WMAKE_TOKEN_TYPE   currentToken;   // Contains information for current token
 
 
 /*
@@ -1209,7 +1209,7 @@ STRM_T PreGetCH( void )
 }
 
 
-STATIC void makeToken( enum Tokens type, TOKEN_TYPE *current, int *index )
+STATIC void makeToken( enum Tokens type, WMAKE_TOKEN_TYPE *current, int *index )
 /************************************************************************/
 {
     switch( type ) {
@@ -1277,7 +1277,7 @@ STATIC int_32 makeHexNumber( char *inString, int *stringLength )
 }
 
 
-STATIC void makeNumberToken( char *inString, TOKEN_TYPE *current, int *index )
+STATIC void makeNumberToken( char *inString, WMAKE_TOKEN_TYPE *current, int *index )
 /****************************************************************************/
 {
     int_32  value;
@@ -1317,7 +1317,7 @@ STATIC void makeNumberToken( char *inString, TOKEN_TYPE *current, int *index )
 }
 
 
-STATIC void makeStringToken( char *inString, TOKEN_TYPE *current, int *index )
+STATIC void makeStringToken( char *inString, WMAKE_TOKEN_TYPE *current, int *index )
 /****************************************************************************/
 {
     int inIndex;
@@ -1358,7 +1358,7 @@ STATIC void makeStringToken( char *inString, TOKEN_TYPE *current, int *index )
     *index = inIndex;
 }
 
-STATIC void makeAlphaToken( char *inString, TOKEN_TYPE *current, int *index )
+STATIC void makeAlphaToken( char *inString, WMAKE_TOKEN_TYPE *current, int *index )
 /***************************************************************************/
 {
     char const  *r;
@@ -1418,7 +1418,7 @@ STATIC BOOLEAN IsMacro( char const *name )
 }
 
 
-STATIC BOOLEAN name2function( TOKEN_TYPE const *current, char const *criterion,
+STATIC BOOLEAN name2function( WMAKE_TOKEN_TYPE const *current, char const *criterion,
     BOOLEAN (*action)( const char * ) , BOOLEAN (**pquestion)( const char * ) )
 /*****************************************************************************/
 {
@@ -1429,7 +1429,7 @@ STATIC BOOLEAN name2function( TOKEN_TYPE const *current, char const *criterion,
     return( TRUE );
 }
 
-STATIC void makeFuncToken( char *inString, TOKEN_TYPE *current, int *index )
+STATIC void makeFuncToken( char *inString, WMAKE_TOKEN_TYPE *current, int *index )
 /***************************************************************************
  * parses only to get alphanumeric characters for special functions
  * ie. EXIST, defined.  if special characters are needed enclose in quotes
@@ -1472,7 +1472,7 @@ STATIC void makeFuncToken( char *inString, TOKEN_TYPE *current, int *index )
     }
 }
 
-STATIC void makeCmdToken( char *inString, TOKEN_TYPE *current, int *index )
+STATIC void makeCmdToken( char *inString, WMAKE_TOKEN_TYPE *current, int *index )
 /**************************************************************************
  * get a command token enclosed in square brackets; very basic - a right
  * square bracket terminates command regardless of quoting
@@ -1516,7 +1516,7 @@ STATIC void makeCmdToken( char *inString, TOKEN_TYPE *current, int *index )
     *index = inIndex;
 }
 
-STATIC void ScanToken( char *inString, TOKEN_TYPE *current, int *tokenLength )
+STATIC void ScanToken( char *inString, WMAKE_TOKEN_TYPE *current, int *tokenLength )
 /****************************************************************************/
 {
     char    *currentString;

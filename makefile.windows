@@ -1,12 +1,12 @@
 CC = wcc386
 LINK = wlink
 
-CPPFLAGS = -I$(%WATCOM)/h -I$(OBJDIR) -Ih -Iwatcom/h -Iwatcom/h/nt -Iwatcom/h/orl $(DEFS)
+CPPFLAGS = -I$(%WATCOM)/h -I$(%WATCOM)/h/nt -I$(OBJDIR) -Ih -Iwatcom/h -Iwatcom/h/nt -Iwatcom/h/orl $(DEFS)
 CFLAGS = -w4 -e25 -5s -bt=nt -mf -q
 
 HOSTCPPFLAGS = -Iwatcom/h
 
-DEFS = -D__NT__ -DWMAKE -DBOOTSTRAP
+DEFS = -D__NT__ -D__WIN32__ -DWMAKE -DBOOTSTRAP
 
 OWBINDIR = nt386
 
@@ -17,7 +17,7 @@ OBJDIR = $(OWBINDIR)/obj
 .c: watcom/c
 .obj: $(OBJDIR)
 .c.obj : 
-	$(CC) $(CFLAGS) $(CPPFLAGS) -I$(OBJDIR) -fo=$(OBJDIR)/$@ $<
+	$(CC) $(CFLAGS) $(CPPFLAGS) -I$(OBJDIR) -fo=$(OBJDIR)/$^. $<
 
 all: $(OBJDIR) $(OWBINDIR)/wmake.exe
 

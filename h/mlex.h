@@ -200,9 +200,9 @@ typedef struct  TOKEN_OP {
         int_32  number;        // string value
         char    string[MAX_STRING];
     }   data;
-}   TOKEN_TYPE;
+}   WMAKE_TOKEN_TYPE;
 
-typedef TOKEN_TYPE DATAVALUE;
+typedef WMAKE_TOKEN_TYPE DATAVALUE;
 
 enum DotNames {                 /* must be in alpha order! */
     DOT_MIN = -1,

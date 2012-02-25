@@ -86,14 +86,21 @@ enum {
     IS_BARF     =   0x80
 };
 
-
-#define isascii(__c)    ((__c) >= CHAR_MIN && (__c) <= CHAR_MAX)
+#ifndef isascii
+    #define isascii(__c)    ((__c) >= CHAR_MIN && (__c) <= CHAR_MAX)
+#endif
 
 extern const UINT8 IsArray[258];
 
+#ifndef isprint
+    #define isprint(__c)        (IsArray[(__c)+2] & IS_PRINT)
+#endif
+
+#ifndef isalpha
+    #define isalpha(__c)        (IsArray[(__c)+2] & IS_ALPHA)
+#endif
+
 #define isws(__c)           (IsArray[(__c)+2] & IS_WS)
-#define isprint(__c)        (IsArray[(__c)+2] & IS_PRINT)
-#define isalpha(__c)        (IsArray[(__c)+2] & IS_ALPHA)
 #define isextc(__c)         (IsArray[(__c)+2] & IS_EXTC)
 #define isdirc(__c)         (IsArray[(__c)+2] & IS_DIRC)
 #define isfilec(__c)        (IsArray[(__c)+2] & IS_FILEC)
