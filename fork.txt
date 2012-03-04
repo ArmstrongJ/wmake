@@ -1,0 +1,8 @@
+Open Watcom Make 1.9 
+====================
+
+This version of Open Watcom Make (wmake) has been modified from the original for feature additions.  If you'd like to peruse the source code, it may be found at:
+
+https://github.com/ArmstrongJ/wmake
+
+The code remans licensed under the Sybase Open Watcom Public License.
