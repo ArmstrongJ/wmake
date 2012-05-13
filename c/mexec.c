@@ -1011,8 +1011,11 @@ STATIC RET_T winSystem( const char *cmd )
     PROCESS_INFORMATION pi;
     SECURITY_ATTRIBUTES saAttr;
     DWORD exitCode;
+    DWORD errorCode;
+    LPTSTR errorMessage;
     
     char *writeable_cmd;
+    
 
     if(cmd == NULL)
         return( RET_ERROR );
@@ -1045,6 +1048,24 @@ STATIC RET_T winSystem( const char *cmd )
                       &pi))                  /* Process info (out) */
     {
         free(writeable_cmd);
+        
+        /* Display the error */
+        errorCode = GetLastError();
+        if(errorCode == ERROR_FILE_NOT_FOUND) {
+            PrtMsg(ERR | UNABLE_TO_EXEC, cmd);
+        } else {
+            errorMessage = (char *)malloc(4096*sizeof(TCHAR));
+            if(errorMessage != NULL && 
+               FormatMessage(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM, 
+                             NULL, errorCode, 0, (LPTSTR)&errorMessage, 0, NULL) > 0) {
+               
+                PrtMsg(ERR | PRNTSTR, errorMessage);
+                
+                LocalFree( errorMessage );
+            } else {
+                PrtMsg(ERR | UNABLE_TO_EXEC);
+            }
+        }
         return( RET_ERROR );
     } 
     else 
