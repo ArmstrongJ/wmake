@@ -30,6 +30,6 @@
 
 
 #define _BANVER     1290
-#define _BANEXTRA   " (Modified 3 Mar 2012)"
-#define _BANEXSHORT "3MAR2012"
+#define _BANEXTRA   " (Built on " ## __DATE__ ## ")"
+#define _BANEXSHORT __DATE__
 
