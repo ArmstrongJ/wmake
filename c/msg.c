@@ -560,6 +560,11 @@ BOOLEAN GetYes( enum MsgClass querymsg )
  */
 {
     char    buf[LINE_BUFF];
+    
+    /* Return immediately if interactive is false */
+    if( !Glob.interactive ) {
+        return( TRUE );
+    }
 
     PrtMsg( INF | NEOL | STRING_YES_NO, querymsg );
 

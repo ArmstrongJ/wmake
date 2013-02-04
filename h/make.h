@@ -104,6 +104,7 @@ struct Glob {
     BIT     auto_depends: 1;/* force autodepends info to be used             */
 
     BIT     show_offenders: 1;   /* display the out-of-date file             */
+    BIT     interactive : 1;/* Allow questions (i.e. Yes/No) to be asked     */
 };
 
 #ifdef DEVELOPMENT

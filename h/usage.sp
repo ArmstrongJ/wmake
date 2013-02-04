@@ -6,7 +6,7 @@ Usage  :  wmake [options]* [macro=text]* [target]*
 Options:  ('/' may be substituted for '-', and '#' for '=')
 -a make all targs (ignoring time stamp)  -b  block/ignore all implicit rules
 -c do not check existence of files made  -d  debug mode (echo progress of work)
--e erase files after error (no prompt)
+-e erase files after error (no prompt)   -g  allow interaction (Y/N questions)
 -f <filename>  process filename instead of MAKEFILE ('-f -' means stdin)
 -h do not print program header           -i  ignore command return status
 :segment HIDDEN

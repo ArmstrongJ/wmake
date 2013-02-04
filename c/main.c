@@ -256,6 +256,7 @@ STATIC char *procFlags( char const * const *argv, const char **log_name )
                 case 'c':   Glob.nocheck   = TRUE;  break;
                 case 'd':   Glob.debug     = TRUE;  break;
                 case 'e':   Glob.erase     = TRUE;  break;
+                case 'g':   Glob.interactive = TRUE;  break;
                 case 'h':   Glob.noheader  = TRUE;  break;
                 case 'i':   Glob.ignore    = TRUE;  break;
                 case 'j':   Glob.rcs_make  = TRUE;  break;
