@@ -51,12 +51,12 @@ $(OWBINDIR)/wmake.exe: $(OBJDIR)/wmake.exe
 $(OBJDIR)/wmake.exe: $(OBJDIR)/usageend.gh $(OBJDIR)/isarray.gh $(OBJS)
 	cd $(OBJDIR) && $(LINK) name $^. sys nt file { $(OBJS) }
 
-$(OWBINDIR)/wmake-nt386.zip: $(OWBINDIR)/wmake
-    zip -D $(OWBINDIR)/wmake-nt386.zip $(OWBINDIR)/wmake.exe fork.txt license.txt
+$(OWBINDIR)/wmake-nt386.zip: $(OWBINDIR)/wmake.exe
+    zip -D -j $(OWBINDIR)/wmake-nt386.zip $(OWBINDIR)/wmake.exe fork.txt license.txt
 
-dist: $(OWBINDIR)/wmake-linux.zip .SYMBOLIC
+dist: $(OWBINDIR)/wmake-nt386.zip .SYMBOLIC
 
 clean: .SYMBOLIC
-	rm -f $(OBJDIR)/*.obj $(OBJDIR)/*.gh $(OBJDIR)/wmake
+	rm -f $(OBJDIR)/*.obj $(OBJDIR)/*.gh $(OBJDIR)/wmake.exe $(OWBINDIR)/wmake.exe $(OWBINDIR)/*.zip
 	rm -f $(HOSTDIR)/*.obj $(HOSTDIR)/wsplice 
 

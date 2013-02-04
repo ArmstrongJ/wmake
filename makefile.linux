@@ -52,11 +52,11 @@ $(OBJDIR)/wmake: $(OBJDIR)/usageend.gh $(OBJDIR)/isarray.gh $(OBJS)
 	cd $(OBJDIR) && $(LINK) name $^. file { $(OBJS) }
 
 $(OWBINDIR)/wmake-linux.zip: $(OWBINDIR)/wmake
-    zip -D $(OWBINDIR)/wmake-linux.zip $(OWBINDIR)/wmake fork.txt license.txt
+    zip -D -j $(OWBINDIR)/wmake-linux.zip $(OWBINDIR)/wmake fork.txt license.txt
 
 dist: $(OWBINDIR)/wmake-linux.zip .SYMBOLIC
 
 clean: .SYMBOLIC
-	rm -f $(OBJDIR)/*.obj $(OBJDIR)/*.gh $(OBJDIR)/wmake
+	rm -f $(OBJDIR)/*.obj $(OBJDIR)/*.gh $(OBJDIR)/wmake $(OWBINDIR)/wmake $(OWBINDIR)/*.zip
 	rm -f $(HOSTDIR)/*.obj $(HOSTDIR)/wsplice 
 
