@@ -2,7 +2,7 @@ CC = wcc386
 LINK = wlink
 
 CPPFLAGS = -I$(%WATCOM)/lh -I$(OBJDIR) -Ih -Iwatcom/h -Iwatcom/h/orl $(DEFS)
-CFLAGS = -w4 -e25 -5s -bt=linux -mf -q
+CFLAGS = -w4 -e25 -5s -bt=linux -mf -q 
 
 HOSTCPPFLAGS = -Iwatcom/h
 
@@ -50,6 +50,11 @@ $(OWBINDIR)/wmake: $(OBJDIR)/wmake
 
 $(OBJDIR)/wmake: $(OBJDIR)/usageend.gh $(OBJDIR)/isarray.gh $(OBJS)
 	cd $(OBJDIR) && $(LINK) name $^. file { $(OBJS) }
+
+$(OWBINDIR)/wmake-linux.zip: $(OWBINDIR)/wmake
+    zip -D $(OWBINDIR)/wmake-linux.zip $(OWBINDIR)/wmake fork.txt license.txt
+
+dist: $(OWBINDIR)/wmake-linux.zip .SYMBOLIC
 
 clean: .SYMBOLIC
 	rm -f $(OBJDIR)/*.obj $(OBJDIR)/*.gh $(OBJDIR)/wmake
