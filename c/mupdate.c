@@ -466,9 +466,10 @@ STATIC RET_T isOutOfDate( TARGET *targ, TARGET *deptarg, BOOLEAN *outofdate )
         return( RET_SUCCESS );
     }
     getDate( deptarg );
-    if( targ->existing && deptarg->existing && deptarg->attr.existsonly ) {
-        return( RET_SUCCESS );
-    }
+    /* if( targ->existing && deptarg->existing && deptarg->attr.existsonly ) {
+     *    return( RET_SUCCESS );
+     *}
+     */
     if( dateCmp( targ->date, deptarg->date ) < 0 ) {
         *outofdate = TRUE;
         if( Glob.show_offenders ) {
